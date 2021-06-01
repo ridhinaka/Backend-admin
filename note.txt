@@ -1,0 +1,24 @@
+  const findProduct = await Product.findOne({productName:req.body.productName})
+        const findAllProduct = await Product.find({})
+        if(findAllProduct.length === 0){
+          console.log("anjing")
+          const create_product = await Product.create(newProduct)
+            const findBrand = await Brand.findById(id)
+            const updateProduct = await Product.findByIdAndUpdate(create_product._id,{$set:{brand_id:findBrand._id}},{new:true})
+            res.status(201).json({msg: "product have been created", data:updateProduct})
+        }else {
+          for(let i = 0 ; i < findAllProduct.length ; i ++){
+            if(findAllProduct[i].productName !== findProduct.productName && findAllProduct[i].UOM_id !== findProduct.UOM_id ){
+              console.log(findAllProduct[i].productName == findProduct.productName && findAllProduct[i].UOM_id !== findProduct.UOM_id)
+              const create_product = await Product.create(newProduct)
+              const findBrand = await Brand.findById(id)
+              const updateProduct = await Product.findByIdAndUpdate(create_product._id,{$set:{brand_id:findBrand._id}},{new:true})
+              res.status(201).json({msg: "product have been created", data:updateProduct})
+            }else {
+              res.status(500).json({msg: "your product already exist"})
+            }
+          }
+        }
+
+         const updateListProduct = await ListProduct.findByIdAndUpdate(createListProduct._id,{$set:{createProduct_id:id}},{new:true}).populate('createProduct_id')
+         res.status(200).json({msg:"your product have been created",data:updateListProduct})
