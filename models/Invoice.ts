@@ -1,17 +1,17 @@
 import mongoose from 'mongoose'
 
 interface IInvoice {
-  code_order_id: string, 
-  totalAmount : number,
+  purchaseCode: string, 
   invoiceCode : string,
   status : string,
+  remaining_credit : number
 }
 
 interface InvoiceDoc extends mongoose.Document {
-  code_order_id : string,
-  totalAmount : number,
+  purchaseCode : string,
   invoiceCode : string,
   status : string,
+  remaining_credit : number
 }
 
 interface InvoiceModel extends mongoose.Model <InvoiceDoc>{
@@ -19,10 +19,10 @@ interface InvoiceModel extends mongoose.Model <InvoiceDoc>{
 }
 
 const invoiceSchema = new mongoose.Schema ({
-  code_order_id : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
-  totalAmount : {type: Number},
+  purchaseCode : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
   invoiceCode :{type: String,required: true, unique :true},
   status : {type: String, default: "pending"},
+  remaining_credit : {type:Number, default: 0}
 },{
     timestamps:true,
     versionKey :false

@@ -1,21 +1,28 @@
 import mongoose from 'mongoose'
 
 interface IPurchase {
-  product_id : string[],
   supplier_id : string,
   codeOrder : string,
-  totalOrder : number,
-  discount : number,
-  quantity : number,
+  discount : number
+  products : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number,
+    discount : number
+  }]
+  totalAmount : number,
 }
 
 interface PurchaseDoc extends mongoose.Document {
-  product_id : string[],
   supplier_id : string,
   codeOrder : string,
-  totalOrder : number,
   discount : number,
-  quantity : number,
+  products : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number
+  }]
+  totalAmount : number,
 }
 
 interface PurchaseModel extends mongoose.Model <PurchaseDoc>{
@@ -23,12 +30,15 @@ interface PurchaseModel extends mongoose.Model <PurchaseDoc>{
 }
 
 const purchaseSchema = new mongoose.Schema({
-  product_id : [{type: mongoose.Types.ObjectId, ref:'productSchema'}],
   supplier_id : {type: mongoose.Types.ObjectId, ref:'supplierSchema'},
   codeOrder : {type: String, required:true},
-  totalOrder : {type: Number, default:0},
   discount : {type: Number, default: 0},
-  quantity : {type: Number, required:true}
+  products : [{
+    product_id : {type: mongoose.Types.ObjectId, ref:'productSchema'},
+    totalOrder : {type: Number, default:0},
+    quantity : {type: Number, required:true},
+  }],
+  totalAmount : {type: Number}
 },
   {
     timestamps:true,

@@ -13,23 +13,22 @@ class invoiceController {
   }
 
   static async createInvoice (req: Request , res: Response) {
-    const {code_order_id} = req.body
+    const {id} = req.params
     const findUser = await User.findById((<any>req).Id)
 
     try {
       if(findUser.role === "finance"){
-        const findPurchaseId = await Purchase.findById(code_order_id)
-        const findOrderId = await Invoice.findOne({code_order_id:code_order_id})
-        if(findPurchaseId && !findOrderId){
+        const findPurchaseOrder = await Purchase.findById(id)
+        const findInvoice = await Invoice.findOne({purchaseCode:id})
+        if(findInvoice === null){
           const newInvoice = {
-            code_order_id : code_order_id,
             invoiceCode : req.body.invoiceCode
           }
-          const create_invoice = await Invoice.create(newInvoice)
-          const updateInvoice = await Invoice.findByIdAndUpdate(create_invoice._id,{$set:{order_id:code_order_id,totalAmount:findPurchaseId.totalOrder}},{new:true}).populate('order_id')
+          const create_newInvoice = await Invoice.create(newInvoice)
+          const updateInvoice = await Invoice.findByIdAndUpdate(create_newInvoice._id,{$set:{purchaseCode:id}},{new:true}).populate('purchaseCode')
           res.status(200).json({msg:"your invoice have been created",data:updateInvoice})
         }else{
-          res.status(500).json({msg: "you invoice already created"})
+          res.status(500).json({msg:"your invoice already created"})
         }
       }else{
         res.status(500).json({msg: "you are not allowed to create invoice"})
@@ -41,28 +40,32 @@ class invoiceController {
 
   static async changeStatus (req: Request, res: Response){
     const {id} = req.params
-    const findInvoice = await Invoice.findById(id).populate('code_order_id')
-    const findTotalOrder:any = findInvoice.code_order_id
+    const {purchase_id} = req.body
+    const findInvoice = await Invoice.findById(id)
     const findUser = await User.findById((<any>req).Id)
-
+    
     try {
       if(findUser.role === "finance"){
         const newChange = {
           invoice_id : id,
+          purchase_id :purchase_id,
           amount : req.body.amount
         }
+      const findPurchaseAmount = await Purchase.findById(purchase_id)
       const change_status = await ChangeStatus.create(newChange)
-      const changeStatusCalculation = findTotalOrder.totalOrder - change_status.amount
-        if(findInvoice.status === "pending"){
-          if(changeStatusCalculation === 0) {
-            const updateInvoiceStatus = await Invoice.findByIdAndUpdate(id,{$set:{status: "paid"}},{new:true})
-            res.status(200).json({msg:updateInvoiceStatus})
-          }else{
-            const updateInvoiceCredit = await Invoice.findByIdAndUpdate(id,{$inc:{totalAmount: -change_status.amount}},{new:true})
-            console.log(updateInvoiceCredit)
-            res.status(200).json({msg: "remaining credit" + ' ' + updateInvoiceCredit.totalAmount})
-          }
-        }
+      const updateChange = await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:findPurchaseAmount.totalAmount}},{new:true})
+
+      const newTotal = updateChange.remaining_credit - change_status.amount
+      await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:newTotal}},{new:true})
+
+      if(newTotal !== 0){
+        const updateCredit = await Invoice.findByIdAndUpdate(id,{$inc:{remaining_credit: - change_status.amount }},{new:true})
+        
+        res.status(200).json({msg:"your remaining credit are",data:updateCredit})
+      }else{
+        const updateInvoiceStatus = await Invoice.findByIdAndUpdate(id,{$set:{status:"paid"}},{new:true})
+        res.status(200).json({msg:"paid",data:updateInvoiceStatus})
+      }
       }
     } catch (error) {
       res.status(500).json({msg:error})

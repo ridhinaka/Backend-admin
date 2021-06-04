@@ -7,9 +7,8 @@ import supplierRoute from '../routes/supplier-route'
 import purchaseRoutes from '../routes/purchase-route'
 import invoiceRoutes from '../routes/invoice-routes'
 import listProductRoutes from '../routes/list-product.route'
+import deliveryRoutes from '../routes/delivery-routes'
 import authJwt from '../middlewares/auth'
-import listProductRoute from '../routes/list-product.route'
-
 
 class Routes {
   router : Router 
@@ -24,6 +23,7 @@ class Routes {
     this.uom()
     this.supplier()
     this.purchase()
+    this.delivery()
     this.invoice()
   }
   public routes(): void {
@@ -61,6 +61,10 @@ class Routes {
 
   public purchase(): void{
     this.router.use(purchaseRoutes)
+  }
+
+  public delivery(): void{
+    this.router.use(deliveryRoutes)
   }
 
   public invoice(): void {
