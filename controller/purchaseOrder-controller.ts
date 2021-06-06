@@ -41,8 +41,7 @@ class purchaseController {
             create_purchaseOrder._id,
             { $set: { supplier_id: findSupplier._id } },
             { new: true }
-          ).populate("product.product_id");
-          console.log(updateNewPO);
+          ).populate("products.product_id");
           res
             .status(200)
             .json({ msg: "your PO have been created", data: updateNewPO });
@@ -106,6 +105,7 @@ class purchaseController {
       res.status(500).json({ msg: "cannot create PO", data: error });
     }
   }
+  
 
   static async totalOrder(req: Request, res: Response) {
     const { id } = req.params;

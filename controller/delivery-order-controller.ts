@@ -29,15 +29,15 @@ class deliveryController {
         const create_DO = await Delivery.create(newDeliveryOrder)
         if(create_DO && (!id_product === true)){
           const update_DO = await Delivery.findByIdAndUpdate(create_DO._id,{$set:{purchase_id:id}},{new:true})
-          for(let i = 0 ; i < findPurchase.product.length; i ++){
-            await Product.findByIdAndUpdate(findPurchase.product[i].product_id,{$inc:{stock:findPurchase.product[i].quantity}},{new:true})
+          for(let i = 0 ; i < findPurchase.products.length; i ++){
+            await Product.findByIdAndUpdate(findPurchase.products[i].product_id,{$inc:{stock:findPurchase.products[i].quantity}},{new:true})
           }
           res.status(200).json({msg:"your DO have been created", data:update_DO})
         }else if(!id_product === false){
           const findPurchaseSpecific = await Purchase.findById(id)
-          for(let i = 0 ; i < findPurchaseSpecific.product.length ; i ++){
-            if(findPurchaseSpecific.product[i].product_id.toString() === id_product){
-              const findProductUpdate = await Product.findByIdAndUpdate(id_product,{$inc:{stock:findPurchaseSpecific.product[i].quantity}},{new:true})
+          for(let i = 0 ; i < findPurchaseSpecific.products.length ; i ++){
+            if(findPurchaseSpecific.products[i].product_id.toString() === id_product){
+              const findProductUpdate = await Product.findByIdAndUpdate(id_product,{$inc:{stock:findPurchaseSpecific.products[i].quantity}},{new:true})
               res.status(200).json({msg:findProductUpdate})
             }else{
               res.status(500)

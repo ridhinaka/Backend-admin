@@ -6,8 +6,8 @@ import UOMRoutes from '../routes/UOM-routes'
 import supplierRoute from '../routes/supplier-route'
 import purchaseRoutes from '../routes/purchase-route'
 import invoiceRoutes from '../routes/invoice-routes'
-import listProductRoutes from '../routes/list-product.route'
 import deliveryRoutes from '../routes/delivery-routes'
+import createOrderCashierRoutes from '../routes/createOrderCashier - routes'
 import authJwt from '../middlewares/auth'
 
 class Routes {
@@ -19,12 +19,12 @@ class Routes {
     this.auth()
     this.brand()
     this.product()
-    this.listProduct()
     this.uom()
     this.supplier()
     this.purchase()
     this.delivery()
     this.invoice()
+    this.createOrderCashier()
   }
   public routes(): void {
     this.router.get("/", (req: Request, res: Response) => {
@@ -47,10 +47,6 @@ class Routes {
   public product(): void{
     this.router.use(productRoutes)
   }
-  public listProduct(): void{
-    this.router.use(listProductRoutes)
-  }
-
   public uom(): void{
     this.router.use(UOMRoutes)
   }
@@ -69,6 +65,9 @@ class Routes {
 
   public invoice(): void {
     this.router.use(invoiceRoutes)
+  }
+  public createOrderCashier(): void {
+    this.router.use(createOrderCashierRoutes)
   }
 }
 

@@ -2,7 +2,6 @@ import {User} from '../models/Users'
 import {Request,Response,NextFunction} from 'express'
 import {Product} from '../models/Product'
 import {Brand} from '../models/Brand'
-import { AnyObject } from 'mongoose'
 
 class productsController {
   constructor (){}
@@ -43,6 +42,38 @@ class productsController {
     }
     catch(error){
       res.status(500).json({msg: "cannot create product",data:error})
+    }
+  }
+
+  static async changeStatusProductActive (req: Request , res: Response) {
+    const {id} = req.params
+    const findProduct = await Product.findById(id)
+
+    try {
+      if(findProduct){
+        const updateActiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"active"}},{new:true})
+        res.status(200).json({msg:updateActiveProduct})
+      }else{
+        res.status(500).json({msg:"your product doesnt exist"})
+      }
+    } catch (error) {
+      res.status(500).json({msg:error})
+    }
+  }
+
+  static async changeStatusProductDeactive (req: Request , res: Response) {
+    const {id} = req.params
+    const findProduct = await Product.findById(id)
+
+    try {
+      if(findProduct){
+        const updateDeactiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"deactive"}},{new:true})
+        res.status(200).json({msg:updateDeactiveProduct})
+      }else{
+        res.status(500).json({msg:"your product doesnt exist"})
+      }
+    } catch (error) {
+      res.status(500).json({msg:error})
     }
   }
 }
