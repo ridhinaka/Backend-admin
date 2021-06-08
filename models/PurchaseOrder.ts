@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 
 interface IPurchase {
   supplier_id : string,
+  supplier_name: string,
   codeOrder : string,
   discount : number
   products : [{
@@ -15,6 +16,7 @@ interface IPurchase {
 
 interface PurchaseDoc extends mongoose.Document {
   supplier_id : string,
+  supplier_name: string,
   codeOrder : string,
   discount : number,
   products : [{
@@ -31,6 +33,7 @@ interface PurchaseModel extends mongoose.Model <PurchaseDoc>{
 
 const purchaseSchema = new mongoose.Schema({
   supplier_id : {type: mongoose.Types.ObjectId, ref:'supplierSchema'},
+  supplier_name : {type: String},
   codeOrder : {type: String, required:true},
   discount : {type: Number, default: 0},
   products : [{

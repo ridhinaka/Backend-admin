@@ -25,7 +25,7 @@ class productsController {
         if(findProduct.toString() === ""){
           if(!findBarcode){
             const create_product = await Product.create(newProduct)
-            res.status(200).json({msg:create_product})
+            res.status(201).json({msg:create_product})
           }else{
             res.status(500).json({msg: "barcode already exist"})
           }
@@ -35,7 +35,7 @@ class productsController {
             res.status(500).json({msg: "product already exist"})
           }else{
             const create_product = await Product.create(newProduct)
-            res.status(200).json({msg:create_product})
+            res.status(201).json({msg:create_product})
           }
         }  
       }

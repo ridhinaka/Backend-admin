@@ -39,11 +39,11 @@ class purchaseController {
           const findSupplier = await Supplier.findById(id);
           const updateNewPO = await Purchase.findByIdAndUpdate(
             create_purchaseOrder._id,
-            { $set: { supplier_id: findSupplier._id } },
+            { $set: { supplier_id: findSupplier._id , supplier_name:findSupplier.supplierName} },
             { new: true }
           ).populate("products.product_id");
           res
-            .status(200)
+            .status(201)
             .json({ msg: "your PO have been created", data: updateNewPO });
         } else {
           if (checkAllProduct) {
@@ -92,7 +92,6 @@ class purchaseController {
 //         },
 //       ]);
 // console.log(x)
-      console.log(findPurchase.products)
       for(let i = 0 ; i < findPurchase.products.length ; i ++){
         if(findPurchase.products[i].product_id.toString() === req.body.product_id){
         const findPuchaseandUpdate = await Purchase.findByIdAndUpdate(id,{$push:{products:[{product_id:product_id,quantity:quantity,discount:discount,totalOrder : (findProduct.purchasePrice * quantity)}]}},{new:true}).populate('product.product_id')

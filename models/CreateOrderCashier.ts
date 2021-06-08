@@ -9,7 +9,9 @@ interface ICreateOrderCashier {
   }]
   subTotalCashier :number,
   subTotalTax :number,
-  subTotalNoTax : number
+  subTotalNoTax : number,
+  grandTotal : number,
+  status: string,
 }
 
 interface CreateOrderCashierDoc extends mongoose.Document {
@@ -21,7 +23,9 @@ interface CreateOrderCashierDoc extends mongoose.Document {
   }]
   subTotalCashier :number,
   subTotalTax :number,
-  subTotalNoTax : number
+  subTotalNoTax : number,
+  grandTotal : number,
+  status: string,
 }
 
 interface CreateOrderCashierModel extends mongoose.Model <CreateOrderCashierDoc>{
@@ -37,7 +41,9 @@ const createOrderCashierSchema = new mongoose.Schema({
   }],
   subTotalCashier :{type: Number},
   subTotalTax :{type: Number},
-  subTotalNoTax : {type: Number}
+  subTotalNoTax : {type: Number},
+  grandTotal : {type: Number},
+  status: {type: String, default: "active"}
 },{
   timestamps:true,
   versionKey :false

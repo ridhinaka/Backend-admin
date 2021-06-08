@@ -3,31 +3,13 @@ import {User} from '../models/Users'
 import {Product} from '../models/Product'
 import {Cancel} from '../models/CancelOrderCashier'
 import { CreateOrderCashier } from '../models/CreateOrderCashier'
+import {Receivable} from '../models/Receivable'
 
 class createOrderCashierController {
   static async getAllOrder (req: Request, res: Response){
     const getAllActiveProduct = await Product.find({productStatus:"active"})
     res.status(200).json({data:getAllActiveProduct})
   }
-
-  // static async getProductFromBarcode (req:Request, res:Response){
-  //   const {id} = req.params
-  
-  //   try {
-  //     const findDetailProduct = await Product.findOne({_id:id,productStatus: "active"})
-  //     if(findDetailProduct.productStatus.toString() === "deactive"){
-  //       res.status(500).json({msg:"product doesnt exist"})
-  //     }else{
-  //       res.status(200).json({})
-  //     }
-  //     console.log(findDetailProduct)
-  //     // const findProductByBarcode = await Product.find({productStatus:"active,",code_product:findDetailProduct.barcode})
-
-  //     // res.status(200).json({findProductByBarcode})
-  //   } catch (error) {
-  //     res.status(500).json({msg:"your product doesnt exist"})
-  //   }
-  // }
 
   static async createOrder (req: Request, res: Response){
     const findUser = await User.findById((<any>req).Id)
@@ -46,9 +28,14 @@ class createOrderCashierController {
           ],
         }
         const createOrderCashier = await CreateOrderCashier.create(newCreateOrderCashier)
+        if(createOrderCashier){
+          const newReceivable = {
+            orderCashier_id : createOrderCashier._id
+          }
+          await Receivable.create(newReceivable)
+        }
         const populateProduct = await CreateOrderCashier.findById(createOrderCashier._id).populate('productsCashier.cashierProduct_id')
-        console.log(populateProduct)
-        res.status(200).json({msg:populateProduct}) 
+        res.status(201).json({msg:populateProduct}) 
       }else{
         res.status(500).json({msg:"you are not allowed to create order"})
       }
@@ -96,7 +83,10 @@ class createOrderCashierController {
       for (let k = 0; k < totalArray.length; k++) {
         subTotalCashier += totalArray[k];
       }
-      await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalCashier:subTotalCashier}},{new:true})
+      const updateTotalOrder = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalCashier:subTotalCashier,grandTotal:subTotalCashier}},{new:true})
+      if(updateTotalOrder){
+        await Receivable.findOneAndUpdate({orderCashier_id:updateTotalOrder._id},{$set:{grandTotal:subTotalCashier}},{new:true})
+      }
       res.status(200).json({ msg: "your subTotalCashier ", data: subTotalCashier });
     } catch (error) {
       res.status(500)
@@ -111,7 +101,10 @@ class createOrderCashierController {
     
     try {
       if(findOrderCashier_id){
-        const isTaxOrder = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalTax:newSubTotal}},{new:true})
+        const isTaxOrder = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalTax:newSubTotal,grandTotal:newSubTotal}},{new:true})
+        if(isTaxOrder){
+          await Receivable.findOneAndUpdate({orderCashier_id:isTaxOrder._id},{$set:{grandTotal:newSubTotal}},{new:true})
+        }
         res.status(200).json({msg:"your total order are",isTaxOrder})
       }else{
         res.status(500).json({msg:"your order doesnt exist"})
@@ -129,8 +122,11 @@ class createOrderCashierController {
     
     try {
       if(findOrderCashier_id){
-        const isTaxOrder = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalNoTax:newSubTotalNoTax}},{new:true})
-        res.status(200).json({msg:"your total order are",isTaxOrder})
+        const isNoTaxOrder = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{subTotalNoTax:newSubTotalNoTax,grandTotal:newSubTotalNoTax}},{new:true})
+        if(isNoTaxOrder){
+          await Receivable.findOneAndUpdate({orderCashier_id:isNoTaxOrder._id},{$set:{grandTotal:newSubTotalNoTax}},{new:true})
+        }
+        res.status(200).json({msg:"your total order are",isNoTaxOrder})
       }else{
         res.status(500).json({msg:"your order doesnt exist"})
       }
@@ -148,17 +144,17 @@ class createOrderCashierController {
           reason : req.body.reason,
           codeOrder : findOrderCashier.code_order_cashier
         }
-        console.log(findOrderCashier.code_order_cashier)
         const createCancelOrder = await Cancel.create(newCancel)
         if(createCancelOrder){
-          await CreateOrderCashier.findByIdAndRemove(id)
+          const updateStatusOrderCashier = await CreateOrderCashier.findByIdAndUpdate(id,{$set:{status:"cancel order"}},{new:true})
+          await Receivable.findOneAndRemove({orderCashier_id:updateStatusOrderCashier._id})
         }
         res.status(200).json({msg:"your order have been canceled",data:createCancelOrder})
       }else{
         res.status(500).json({msg:"your order doesnt exist"})
       }
     } catch (error) {
-      res.status(500)
+      res.status(500).json({msg:"your order have been cancelled already"})
     }
   }
 }

@@ -8,6 +8,9 @@ import purchaseRoutes from '../routes/purchase-route'
 import invoiceRoutes from '../routes/invoice-routes'
 import deliveryRoutes from '../routes/delivery-routes'
 import createOrderCashierRoutes from '../routes/createOrderCashier - routes'
+import receivableRoutes from '../routes/receivable - routes'
+import payableRoutes from '../routes/payable - routes'
+import estatementRoutes from '../routes/eStatement-routes'
 import authJwt from '../middlewares/auth'
 
 class Routes {
@@ -25,6 +28,9 @@ class Routes {
     this.delivery()
     this.invoice()
     this.createOrderCashier()
+    this.receivable()
+    this.payable()
+    this.estatement()
   }
   public routes(): void {
     this.router.get("/", (req: Request, res: Response) => {
@@ -69,6 +75,16 @@ class Routes {
   public createOrderCashier(): void {
     this.router.use(createOrderCashierRoutes)
   }
+  public receivable(): void {
+    this.router.use(receivableRoutes)
+  }
+  public payable(): void {
+    this.router.use(payableRoutes)
+  }
+  public estatement(): void {
+    this.router.use(estatementRoutes)
+  }
+
 }
 
 export default new Routes().router 

@@ -32,7 +32,7 @@ class deliveryController {
           for(let i = 0 ; i < findPurchase.products.length; i ++){
             await Product.findByIdAndUpdate(findPurchase.products[i].product_id,{$inc:{stock:findPurchase.products[i].quantity}},{new:true})
           }
-          res.status(200).json({msg:"your DO have been created", data:update_DO})
+          res.status(201).json({msg:"your DO have been created", data:update_DO})
         }else if(!id_product === false){
           const findPurchaseSpecific = await Purchase.findById(id)
           for(let i = 0 ; i < findPurchaseSpecific.products.length ; i ++){

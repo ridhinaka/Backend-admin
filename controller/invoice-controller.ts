@@ -20,16 +20,25 @@ class invoiceController {
       if(findUser.role === "finance"){
         const findPurchaseOrder = await Purchase.findById(id)
         const findInvoice = await Invoice.findOne({purchaseCode:id})
-        if(findInvoice === null){
           const newInvoice = {
             invoiceCode : req.body.invoiceCode
           }
-          const create_newInvoice = await Invoice.create(newInvoice)
-          const updateInvoice = await Invoice.findByIdAndUpdate(create_newInvoice._id,{$set:{purchaseCode:id}},{new:true}).populate('purchaseCode')
-          res.status(200).json({msg:"your invoice have been created",data:updateInvoice})
-        }else{
-          res.status(500).json({msg:"your invoice already created"})
-        }
+          if(findPurchaseOrder === null || findInvoice !== null){
+            res.status(500).json({msg:"your PO doesnt exist"})
+          }else{
+            const create_newInvoice = await Invoice.create(newInvoice)
+            const updateInvoice = await Invoice.findByIdAndUpdate(create_newInvoice._id,{$set:{purchaseCode:id,supplier_id:findPurchaseOrder.supplier_id,grandTotal:findPurchaseOrder.totalAmount}},{new:true}).populate('purchaseCode')
+            if(updateInvoice){
+              const newPayable = {
+                supplier_id : findPurchaseOrder.supplier_id,
+                id_invoice : updateInvoice._id,
+                amount : updateInvoice.grandTotal,
+                remainingCredit : updateInvoice.remaining_credit
+              }
+              await Payable.create(newPayable)
+            }
+            res.status(201).json({msg:"your invoice have been created",data:updateInvoice})
+          } 
       }else{
         res.status(500).json({msg: "you are not allowed to create invoice"})
       }
@@ -52,20 +61,35 @@ class invoiceController {
           amount : req.body.amount
         }
       const findPurchaseAmount = await Purchase.findById(purchase_id)
-      const change_status = await ChangeStatus.create(newChange)
-      const updateChange = await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:findPurchaseAmount.totalAmount}},{new:true})
-
-      const newTotal = updateChange.remaining_credit - change_status.amount
-      await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:newTotal}},{new:true})
-
-      if(newTotal !== 0){
-        const updateCredit = await Invoice.findByIdAndUpdate(id,{$inc:{remaining_credit: - change_status.amount }},{new:true})
-        
-        res.status(200).json({msg:"your remaining credit are",data:updateCredit})
-      }else{
-        const updateInvoiceStatus = await Invoice.findByIdAndUpdate(id,{$set:{status:"paid"}},{new:true})
-        res.status(200).json({msg:"paid",data:updateInvoiceStatus})
-      }
+      const checkDocument = await ChangeStatus.countDocuments({invoice_id:findInvoice._id})
+      if(checkDocument === 0){
+        const change_status = await ChangeStatus.create(newChange)
+        const updateChange = await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:findPurchaseAmount.totalAmount}},{new:true})
+        const newTotal = updateChange.remaining_credit - change_status.amount
+        const invoiceUpdate = await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:newTotal}},{new:true})
+        if(newTotal !== 0){
+          const updateCredit = await Invoice.findByIdAndUpdate(id,{$set:{remaining_credit:invoiceUpdate.remaining_credit}},{new:true})
+          await Payable.findOneAndUpdate({id_invoice:updateCredit._id},{$set:{remainingCredit:updateCredit.remaining_credit}},{new:true})
+          res.status(200).json({msg:"your remaining credit are",data:updateCredit})
+        }else{
+          const updateInvoiceStatus = await Invoice.findByIdAndUpdate(id,{$set:{status:"paid"}},{new:true})
+          res.status(200).json({msg:"paid",data:updateInvoiceStatus})
+          }
+        }else{
+          const updateChange = {
+            amount : req.body.amount
+          }
+          const updateChangeStatus = await ChangeStatus.findOneAndUpdate({invoice_id:findInvoice._id},{$set:{amount:req.body.amount}},{new:true})
+          if(updateChange){
+            const UpdateTotalCreditInvoice = await Invoice.findByIdAndUpdate(id,{$inc:{remaining_credit:- updateChangeStatus.amount}},{new:true})
+            if(UpdateTotalCreditInvoice.remaining_credit === 0){
+              const updateInvoiceStatus = await Invoice.findByIdAndUpdate(id,{$set:{status:"paid"}},{new:true})
+              res.status(200).json({data:updateInvoiceStatus})
+            }else{
+              res.status(200).json({msg:UpdateTotalCreditInvoice})
+            }
+          }
+        }
       }
     } catch (error) {
       res.status(500).json({msg:error})

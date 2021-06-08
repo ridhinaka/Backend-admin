@@ -2,12 +2,16 @@ import mongoose from 'mongoose'
 
 interface IPayable {
   supplier_id : string,
-  amount : string, 
+  id_invoice : string,
+  amount : number,
+  remainingCredit : number
 }
 
 interface PayableDoc extends mongoose.Document{
   supplier_id : string,
-  amount : string, 
+  id_invoice : string,
+  amount : number, 
+  remainingCredit : number
 }
 
 interface PayableModel extends mongoose.Model <PayableDoc>{
@@ -16,7 +20,9 @@ interface PayableModel extends mongoose.Model <PayableDoc>{
 
 const payableSchema = new mongoose.Schema({
   supplier_id : {type: mongoose.Types.ObjectId, ref:'supplierSchema'},
-  amount : {type: String, required:true}
+  id_invoice : {type:mongoose.Types.ObjectId, ref: 'invoiceSchema'},
+  amount : {type: Number},
+  remainingCredit : {type:Number}
 },
   {
     timestamps:true,

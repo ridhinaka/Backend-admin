@@ -3,13 +3,13 @@ import mongoose from 'mongoose'
 interface ICancel {
   orderCashier_id : string,
   reason : string,
-  codeOrder : string
+  codeOrder : string,
 }
 
 interface CancelDoc extends mongoose.Document {
   orderCashier_id : string,
   reason : string,
-  codeOrder : String
+  codeOrder : string
 }
 
 interface CancelModel extends mongoose.Model <CancelDoc>{
