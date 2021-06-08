@@ -10,8 +10,11 @@ class userRoutes implements IRoutes{
   }
   route(): void {
     this.router.get('/user', userController.getUser)
+    this.router.get('/user/:id', userController.getUserID)
     this.router.post('/user/create', userController.createUser)
     this.router.post('/user/login',userController.loginUser)
+    
+    this.router.put('/user/forgetpass',userController.forgetPassword)
   }
 }
 

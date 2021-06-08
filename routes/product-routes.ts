@@ -9,6 +9,7 @@ class productRoutes implements IRoutes{
     this.route()
   }
   route(): void {
+    this.router.get('/product/getProduct', productsController.getProduct)
     this.router.post('/product/createproduct/:id',productsController.createProduct)
     this.router.patch('/updateStatusProduct/:id',productsController.changeStatusProductActive)
     this.router.patch('/updateStatusProductDeactive/:id',productsController.changeStatusProductDeactive)

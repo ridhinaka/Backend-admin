@@ -3,8 +3,16 @@ import {Brand} from '../models/Brand'
 import {User} from '../models/Users'
 
 class brandContoller {
+  static async getBrand (req: Request , res: Response) {
+    try{
+      const findBrand = await Brand.find({})
+      res.status(200).json({data:findBrand})
+    }
+    catch(error){
+      res.status(500).json({msg:error})
+    }
+  }
   static async createBrand (req:Request, res: Response){
-    
     const findUser = await User.findById((<any>req).Id)
     try {
       if(findUser.role === "inventory"){

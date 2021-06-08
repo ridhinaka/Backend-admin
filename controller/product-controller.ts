@@ -1,10 +1,19 @@
 import {User} from '../models/Users'
 import {Request,Response,NextFunction} from 'express'
 import {Product} from '../models/Product'
-import {Brand} from '../models/Brand'
 
 class productsController {
   constructor (){}
+  static async getProduct (req: Request , res: Response) {
+    try{
+      const findProduct = await Product.find({})
+      res.status(200).json({data:findProduct})
+    }
+    catch(error){
+      res.status(500).json({msg:error})
+    }
+  }
+
   static async createProduct (req: Request , res: Response) {
     const {id} = req.params
     

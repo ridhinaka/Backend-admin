@@ -10,13 +10,13 @@ class App {
   constructor() {
 
     this.app = express()
-    // this.cors()
+    this.cors()
     this.plugin()
     this.routes()
   }
-  // protected cors():void {
-  //   this.app.use(cors())
-  // }
+  protected cors():void {
+    this.app.use(cors())
+  }
   protected routes(): void{
     this.app.use(routes)
   }

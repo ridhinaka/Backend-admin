@@ -8,6 +8,18 @@ class userController {
   static async getUser (req: Request , res: Response) {
     const findUser = await User.find({})
     res.status(200).json({data:findUser})
+
+  }
+
+  static async getUserID (req: Request, res: Response){
+    const {id} = req.params
+    console.log(id);
+    const findUser = await User.findById(id)
+    console.log(findUser);
+    
+    res.status(200).json({data:findUser})
+
+
   }
 
   static async createUser (req: Request, res: Response){
@@ -53,5 +65,18 @@ class userController {
     }
     
   }
+
+  static async forgetPassword(req: Request, res: Response, next: NextFunction){
+    const { password, email } = req.body
+    const user = await User.findOne({  email: email})
+    if (user){
+        const salt = bcrypt.genSaltSync(10)
+        const newData = { password }
+        newData.password = bcrypt.hashSync(newData.password, salt)
+        const updateUserPass = await User.findOneAndUpdate({ email: email}, newData, { new: true})
+        res.status(200).json({success : true, data : updateUserPass})            
+    }
+    else{ next({name: 'Forget Password Error'})}
+}
 }
 export default userController
