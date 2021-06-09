@@ -14,13 +14,17 @@ class invoiceController {
 
   static async createInvoice (req: Request , res: Response) {
     const {id} = req.params
+    const {purchaseCode} = req.body
     const findUser = await User.findById((<any>req).Id)
 
     try {
       if(findUser.role === "finance"){
-        const findPurchaseOrder = await Purchase.findById(id)
+        const findPurchaseOrder = await Purchase.findOne({codeOrder:purchaseCode})
+        console.log(findPurchaseOrder)
+        console.log(findPurchaseOrder)
         const findInvoice = await Invoice.findOne({purchaseCode:id})
           const newInvoice = {
+            purchaseCode,
             invoiceCode : req.body.invoiceCode
           }
           if(findPurchaseOrder === null || findInvoice !== null){

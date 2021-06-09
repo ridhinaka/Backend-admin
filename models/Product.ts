@@ -28,8 +28,8 @@ interface ProductModel extends mongoose.Model <ProductDoc>{
 }
 
 const productSchema = new mongoose.Schema ({
-  brand_id : {type:String},
-  UOM_id : {type:String},
+  brand_id : {type:mongoose.Types.ObjectId, ref: 'brandSchema'},
+  UOM_id : {type:mongoose.Types.ObjectId, ref: 'UOMSchema'},
   productName :  {type: String, required:true},
   productImage : {type: String, required:true},
   sellingPrice : {type: Number, required:true} ,
