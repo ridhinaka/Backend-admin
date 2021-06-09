@@ -1,7 +1,8 @@
 import {User} from '../models/Users'
 import {Request,Response,NextFunction} from 'express'
 import {Product} from '../models/Product'
-
+import { Brand } from '../models/Brand'
+import {UOM} from '../models/UOM'
 class productsController {
   constructor (){}
   static async getProduct (req: Request , res: Response) {
@@ -15,13 +16,15 @@ class productsController {
   }
 
   static async createProduct (req: Request , res: Response) {
-    const {id} = req.params
-    
+    const {brand_id,UOM_id} = req.body
     try{
       const findUser = await User.findById((<any>req).Id)
       if(findUser.role === "inventory"){
+        const findBrand = await Brand.findOne({brandName:brand_id})
+        const findUOM = await UOM.findOne({UOM_name:UOM_id})
         const newProduct = {
-          UOM_id : req.body.UOM_id,
+          brand_id : findBrand.brandName,
+          UOM_id : findUOM.UOM_name,
           productName : req.body.productName,
           productImage : req.body.productImage,
           sellingPrice : req.body.sellingPrice,
@@ -34,6 +37,8 @@ class productsController {
         if(findProduct.toString() === ""){
           if(!findBarcode){
             const create_product = await Product.create(newProduct)
+            // const findBYID = await Product.findById(create_product._id).populate('UOM_id')
+            // console.log(findBYID)
             res.status(201).json({msg:create_product})
           }else{
             res.status(500).json({msg: "barcode already exist"})

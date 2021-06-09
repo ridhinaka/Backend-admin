@@ -41,7 +41,7 @@ class userController {
       res.status(201).json({msg: "new user created", data: findUser})
       }
     } catch (error) {
-      res.status(500).json({msg:"error anjing"})
+      res.status(500).json({msg:"error"})
     }
   }
 

@@ -26,12 +26,6 @@ class estatementController {
   //     res.status(500).json({error})
   //   }
   // }
-  static async pukimak (res:Response, req:Request){
-    console.log("anjing")
-    const findUser = await User.findById((<any>req).Id);
-
-    console.log(findUser)
-  }
 }
 
 export default estatementController

@@ -10,8 +10,7 @@ class estatementRoutes implements IRoutes {
   }
 
   route():void {
-    // this.router.post('/memek',estatementController.create_estatement)
-    this.router.get('/memek',estatementController.pukimak)
+    
   }
 }
 
