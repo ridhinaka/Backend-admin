@@ -63,8 +63,11 @@ class productsController {
     const findProduct = await Product.findById(id)
 
     try {
-      if(findProduct){
+      if(findProduct.productStatus === "deactive"){
         const updateActiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"active"}},{new:true})
+        res.status(200).json({msg:updateActiveProduct})
+      }else if(findProduct.productStatus === "active"){
+        const updateActiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"deactive"}},{new:true})
         res.status(200).json({msg:updateActiveProduct})
       }else{
         res.status(500).json({msg:"your product doesnt exist"})

@@ -19,19 +19,18 @@ class invoiceController {
 
     try {
       if(findUser.role === "finance"){
-        const findPurchaseOrder = await Purchase.findOne({codeOrder:purchaseCode})
-        console.log(findPurchaseOrder)
-        console.log(findPurchaseOrder)
-        const findInvoice = await Invoice.findOne({purchaseCode:id})
+        const findPurchaseOrder = await Purchase.findById(purchaseCode)
+        console.log(purchaseCode)
+        const findInvoice = await Invoice.findOne({purchaseCode:purchaseCode})
           const newInvoice = {
             purchaseCode,
             invoiceCode : req.body.invoiceCode
           }
           if(findPurchaseOrder === null || findInvoice !== null){
-            res.status(500).json({msg:"your PO doesnt exist"})
+            res.status(500).json({msg:"cannot create invoice"})
           }else{
             const create_newInvoice = await Invoice.create(newInvoice)
-            const updateInvoice = await Invoice.findByIdAndUpdate(create_newInvoice._id,{$set:{purchaseCode:id,supplier_id:findPurchaseOrder.supplier_id,grandTotal:findPurchaseOrder.totalAmount}},{new:true}).populate('purchaseCode')
+            const updateInvoice = await Invoice.findByIdAndUpdate(create_newInvoice._id,{$set:{purchaseCode:purchaseCode,supplier_id:findPurchaseOrder.supplier_id,grandTotal:findPurchaseOrder.totalAmount,remaining_credit:findPurchaseOrder.totalAmount}},{new:true}).populate('purchaseCode')
             if(updateInvoice){
               const newPayable = {
                 supplier_id : findPurchaseOrder.supplier_id,
