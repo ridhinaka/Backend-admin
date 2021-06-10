@@ -12,6 +12,17 @@ class invoiceController {
     res.status(200).json({msg: findInvoice})
   }
 
+  static async getSpecificInvoice (req:Request, res:Response){
+    const {id} = req.params
+
+    try {
+      const specificInvoice = await Invoice.findById(id)
+      res.status(200).json({msg:specificInvoice})
+    } catch (error) {
+      res.status(500).json({msg:error})
+    }
+  }
+
   static async createInvoice (req: Request , res: Response) {
     const {id} = req.params
     const {purchaseCode} = req.body

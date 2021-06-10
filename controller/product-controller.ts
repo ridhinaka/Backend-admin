@@ -15,6 +15,17 @@ class productsController {
     }
   }
 
+  static async getSpecificProduct (req:Request, res:Response){
+    const {id} = req.params
+
+    try {
+      const specificProduct = await Product.findById(id)
+      res.status(200).json({msg:specificProduct})
+    } catch (error) {
+      res.status(500).json({msg:error})
+    }
+  }
+
   static async createProduct (req: Request , res: Response) {
     const {id} = req.params
     const {brand_id,UOM_id} = req.body
