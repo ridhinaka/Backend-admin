@@ -13,13 +13,9 @@ class userController {
 
   static async getUserID (req: Request, res: Response){
     const {id} = req.params
-    console.log(id);
     const findUser = await User.findById(id)
-    console.log(findUser);
     
     res.status(200).json({data:findUser})
-
-
   }
 
   static async createUser (req: Request, res: Response){

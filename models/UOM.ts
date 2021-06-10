@@ -19,6 +19,6 @@ const UOMschema = new mongoose.Schema ({
     versionKey :false
   })
 
-const UOM = mongoose.model<UOMDoc, UOMModel> ('UOMschema', UOMschema)
+const UOM = mongoose.model<UOMDoc, UOMModel> ('UOM', UOMschema)
 
 export {UOM}

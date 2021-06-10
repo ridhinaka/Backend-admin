@@ -21,8 +21,6 @@ class productsController {
     try{
       const findUser = await User.findById((<any>req).Id)
       if(findUser.role === "inventory"){
-        const findBrand = await Brand.findById(id)
-        const findUOM = await UOM.findById(UOM_id)
         const newProduct = {
           brand_id,
           UOM_id,
@@ -37,9 +35,10 @@ class productsController {
         if(findProduct.toString() === ""){
           if(!findBarcode){
             const create_product = await Product.create(newProduct)
-            const findBYID = await Product.findById(create_product._id).populate('UOM_id')
-            console.log(findBYID)
-            res.status(201).json({msg:create_product})
+            const findBYID = await Product.findById(create_product._id)
+            .populate('brand_id')
+            .populate('UOM_id')
+            res.status(201).json({msg:findBYID})
           }else{
             res.status(500).json({msg: "barcode already exist"})
           }

@@ -14,29 +14,33 @@ class purchaseController {
 
   static async createPurchaseOrder(req: Request, res: Response) {
     const { id } = req.params;
-    const { product_id, quantity, discount } = req.body;
+    const { product_id, quantity, discount,supplier_id } = req.body;
     const findProduct = await Product.findById(product_id);
     try {
       const findUser = await User.findById((<any>req).Id);
       if (findUser.role === "inventory") {
-        const findIdSupplier = await Purchase.findOne({ supplier_id: id });
+        const findIdSupplier = await Purchase.findOne({ supplier_id: supplier_id });
         const checkAllProduct = await Purchase.findOne({
           product_id: product_id,
         });
+
+        console.log(supplier_id)
         if (findIdSupplier === null || checkAllProduct === null) {
           const newPurchaseOrder = {
             codeOrder: req.body.codeOrder,
             discount: discount,
             products: [
               {
-                product_id: product_id,
-                quantity: quantity,
+                supplier_id :supplier_id,
+                product_id : product_id,
+                quantity : quantity,
                 totalOrder: findProduct.purchasePrice * quantity - discount,
               },
             ],
           };
+        
           const create_purchaseOrder = await Purchase.create(newPurchaseOrder);
-          const findSupplier = await Supplier.findById(id);
+          const findSupplier = await Supplier.findOne({_id:supplier_id});
           const updateNewPO = await Purchase.findByIdAndUpdate(
             create_purchaseOrder._id,
             { $set: { supplier_id: findSupplier._id , supplier_name:findSupplier.supplierName} },
