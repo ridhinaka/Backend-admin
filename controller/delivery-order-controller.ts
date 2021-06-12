@@ -13,36 +13,49 @@ class deliveryController {
   }
 
   static async createDeliveryOrder (req: Request , res: Response){
-    
-    const {id} = req.params
-    const {deliveryCode,id_product,id_item} = req.body
+
+    const {deliveryCode,id_product,id_item,purchase_id} = req.body
     const findUser = await User.findById((<any>req).Id)
-    const findPurchase = await Purchase.findById(id)
+    const findPurchase = await Purchase.findById(purchase_id)
 
     try {
       if(findUser.role === "inventory"){
         const newDeliveryOrder = {
           id_product : id_product,
-          id_item : id_item,
+          purchase_id : purchase_id,
           deliveryCode : deliveryCode,
         }
-        const create_DO = await Delivery.create(newDeliveryOrder)
+        const create_DO = await Delivery.create(newDeliveryOrder) 
         if(create_DO && (!id_product === true)){
-          const update_DO = await Delivery.findByIdAndUpdate(create_DO._id,{$set:{purchase_id:id}},{new:true})
+          const update_DO = await Delivery.findByIdAndUpdate(create_DO._id,{$set:{purchase_id:purchase_id}},{new:true})
           for(let i = 0 ; i < findPurchase.products.length; i ++){
             await Product.findByIdAndUpdate(findPurchase.products[i].product_id,{$inc:{stock:findPurchase.products[i].quantity}},{new:true})
           }
           res.status(201).json({msg:"your DO have been created", data:update_DO})
-        }else if(!id_product === false){
-          const findPurchaseSpecific = await Purchase.findById(id)
+        }
+        else if(!id_product === false){
+          const createDO = await Delivery.create(newDeliveryOrder) 
+          const findPurchaseSpecific = await Purchase.findById(purchase_id)
           for(let i = 0 ; i < findPurchaseSpecific.products.length ; i ++){
             if(findPurchaseSpecific.products[i].product_id.toString() === id_product){
-              const findProductUpdate = await Product.findByIdAndUpdate(id_product,{$inc:{stock:findPurchaseSpecific.products[i].quantity}},{new:true})
-              res.status(200).json({msg:findProductUpdate})
-            }else{
+              const updateStockProduct = await Product.findByIdAndUpdate(id_product,{$inc:{stock:findPurchaseSpecific.products[i].quantity}},{new:true})
+              if(updateStockProduct){
+                const findPurchaseForDelivery = await Purchase.findById(purchase_id)
+                const productsDO_array = findPurchaseForDelivery.productsDeliveryOrder
+                for(let i = 0 ; i < findPurchaseForDelivery.productsDeliveryOrder.length ; i ++){
+                  if(findPurchaseForDelivery.productsDeliveryOrder[i].product_id.toString() === id_product){
+                    productsDO_array.splice(i,1)
+                  }
+                }
+                console.log("batas goblog")
+                console.log(findPurchaseForDelivery)
+              }
+            }
+            else{
               res.status(500)
             }
           }
+          res.status(201).json({msg:createDO})
         }
       }
     } catch (error) {

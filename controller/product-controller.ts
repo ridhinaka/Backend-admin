@@ -15,14 +15,23 @@ class productsController {
     }
   }
 
+  static async getSpecificProduct (req:Request, res:Response){
+    const {id} = req.params
+
+    try {
+      const specificProduct = await Product.findById(id)
+      res.status(200).json({msg:specificProduct})
+    } catch (error) {
+      res.status(500).json({msg:error})
+    }
+  }
+
   static async createProduct (req: Request , res: Response) {
     const {id} = req.params
     const {brand_id,UOM_id} = req.body
     try{
       const findUser = await User.findById((<any>req).Id)
       if(findUser.role === "inventory"){
-        const findBrand = await Brand.findById(id)
-        const findUOM = await UOM.findById(UOM_id)
         const newProduct = {
           brand_id,
           UOM_id,
@@ -37,9 +46,10 @@ class productsController {
         if(findProduct.toString() === ""){
           if(!findBarcode){
             const create_product = await Product.create(newProduct)
-            const findBYID = await Product.findById(create_product._id).populate('UOM_id')
-            console.log(findBYID)
-            res.status(201).json({msg:create_product})
+            const findBYID = await Product.findById(create_product._id)
+            .populate('brand_id')
+            .populate('UOM_id')
+            res.status(201).json({msg:findBYID})
           }else{
             res.status(500).json({msg: "barcode already exist"})
           }
@@ -64,8 +74,11 @@ class productsController {
     const findProduct = await Product.findById(id)
 
     try {
-      if(findProduct){
+      if(findProduct.productStatus === "deactive"){
         const updateActiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"active"}},{new:true})
+        res.status(200).json({msg:updateActiveProduct})
+      }else if(findProduct.productStatus === "active"){
+        const updateActiveProduct = await Product.findByIdAndUpdate(id,{$set:{productStatus:"deactive"}},{new:true})
         res.status(200).json({msg:updateActiveProduct})
       }else{
         res.status(500).json({msg:"your product doesnt exist"})

@@ -8,18 +8,24 @@ class purchaseController {
   constructor() {}
 
   static async getPurchase(req: Request, res: Response) {
-    const findPurchaseOrder = await Purchase.find({});
-    res.status(200).json({ msg: findPurchaseOrder });
+
+    try {
+      const findPurchaseOrder = await Purchase.find({status:false})
+      res.status(200).json({ msg: findPurchaseOrder });
+    } catch (error) {
+      res.status(500)
+    }
+    
   }
 
   static async createPurchaseOrder(req: Request, res: Response) {
     const { id } = req.params;
-    const { product_id, quantity, discount } = req.body;
+    const { product_id, quantity, discount,supplier_id } = req.body;
     const findProduct = await Product.findById(product_id);
     try {
       const findUser = await User.findById((<any>req).Id);
       if (findUser.role === "inventory") {
-        const findIdSupplier = await Purchase.findOne({ supplier_id: id });
+        const findIdSupplier = await Purchase.findOne({ supplier_id: supplier_id });
         const checkAllProduct = await Purchase.findOne({
           product_id: product_id,
         });
@@ -29,19 +35,23 @@ class purchaseController {
             discount: discount,
             products: [
               {
-                product_id: product_id,
-                quantity: quantity,
+                supplier_id :supplier_id,
+                product_id : product_id,
+                quantity : quantity,
                 totalOrder: findProduct.purchasePrice * quantity - discount,
               },
             ],
           };
+        
           const create_purchaseOrder = await Purchase.create(newPurchaseOrder);
-          const findSupplier = await Supplier.findById(id);
+           await Purchase.findByIdAndUpdate(create_purchaseOrder._id,{$push:{productsDeliveryOrder:{product_id:product_id,totalOrder:findProduct.purchasePrice * quantity - discount,quantity:quantity}}},{new:true})
+          const findSupplier = await Supplier.findOne({_id:supplier_id});
           const updateNewPO = await Purchase.findByIdAndUpdate(
             create_purchaseOrder._id,
             { $set: { supplier_id: findSupplier._id , supplier_name:findSupplier.supplierName} },
             { new: true }
-          ).populate("products.product_id");
+          ).populate("products.product_id")
+          .populate('products.product_id.UOM_id')
           res
             .status(201)
             .json({ msg: "your PO have been created", data: updateNewPO });
@@ -77,29 +87,12 @@ class purchaseController {
     const findProduct = await Product.findById(product_id);
     const findPurchase = await Purchase.findById(id);
 
+    
     try {
-//       const x  = await Purchase.aggregate([
-//         {
-//           $project: {
-//             products: {
-//               $filter: {
-//                 input: "$products",
-//                 as: "product",
-//                 cond: { $eq: ["$$product.product_id",product_id] },
-//               },
-//             },
-//           },
-//         },
-//       ]);
-// console.log(x)
-      for(let i = 0 ; i < findPurchase.products.length ; i ++){
-        if(findPurchase.products[i].product_id.toString() === req.body.product_id){
-        const findPuchaseandUpdate = await Purchase.findByIdAndUpdate(id,{$push:{products:[{product_id:product_id,quantity:quantity,discount:discount,totalOrder : (findProduct.purchasePrice * quantity)}]}},{new:true}).populate('product.product_id')
-        res.status(200).json({msg:findPuchaseandUpdate})
-        }else{
-          res.status(500)
-        }
-      }
+        const findPuchaseandUpdate = await Purchase.findByIdAndUpdate(id,{$push:{products:[{product_id:product_id,quantity:quantity,discount:discount,totalOrder : (findProduct.purchasePrice * quantity)}]}},{new:true}).populate('products.product_id').populate('products.product_id.UOM_id')
+        const updatePurchaseDelivery = await Purchase.findByIdAndUpdate(findPuchaseandUpdate._id,{$push:{productsDeliveryOrder:{product_id:product_id,totalOrder:findProduct.purchasePrice * quantity - discount,quantity:quantity}}},{new:true})
+        res.status(200).json({msg:updatePurchaseDelivery})
+      
     } catch (error) {
       res.status(500).json({ msg: "cannot create PO", data: error });
     }
@@ -126,7 +119,7 @@ class purchaseController {
         totalPO += totalArray[k];
       }
       const newTotalPO = totalPO - findPurchase.discount;
-      const updateTotalOrder = await Purchase.findByIdAndUpdate(
+      await Purchase.findByIdAndUpdate(
         id,
         { $set: { totalAmount: newTotalPO } },
         { new: true }

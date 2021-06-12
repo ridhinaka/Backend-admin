@@ -2,28 +2,37 @@ import mongoose from 'mongoose'
 
 interface IPurchase {
   supplier_id : string,
-  supplier_name: string,
   codeOrder : string,
   discount : number
   products : [{
     product_id : string,
     totalOrder :number,
     quantity : number,
-    discount : number
-  }]
+  }],
+  productsDeliveryOrder : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number
+  }],
+  status : boolean,
   totalAmount : number,
 }
 
 interface PurchaseDoc extends mongoose.Document {
   supplier_id : string,
-  supplier_name: string,
   codeOrder : string,
   discount : number,
   products : [{
     product_id : string,
     totalOrder :number,
     quantity : number
-  }]
+  }],
+  productsDeliveryOrder : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number
+  }],
+  status : boolean,
   totalAmount : number,
 }
 
@@ -33,7 +42,6 @@ interface PurchaseModel extends mongoose.Model <PurchaseDoc>{
 
 const purchaseSchema = new mongoose.Schema({
   supplier_id : {type: mongoose.Types.ObjectId, ref:'supplierSchema'},
-  supplier_name : {type: String},
   codeOrder : {type: String, required:true},
   discount : {type: Number, default: 0},
   products : [{
@@ -41,6 +49,12 @@ const purchaseSchema = new mongoose.Schema({
     totalOrder : {type: Number, default:0},
     quantity : {type: Number, required:true},
   }],
+  productsDeliveryOrder : [{
+    product_id : {type:String, ref:'productSchema'},
+    totalOrder : {type: Number},
+    quantity : {type: Number}
+  }],
+  status: {type: Boolean,default: false},
   totalAmount : {type: Number}
 },
   {

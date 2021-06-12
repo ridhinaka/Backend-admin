@@ -21,7 +21,7 @@ interface InvoiceModel extends mongoose.Model <InvoiceDoc>{
 }
 
 const invoiceSchema = new mongoose.Schema ({
-  purchaseCode : {type: String, ref:'purchaseSchema'},
+  purchaseCode : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
   invoiceCode :{type: String,required: true, unique :true},
   status : {type: String, default: "pending"},
   grandTotal : {type:Number,default:0},
