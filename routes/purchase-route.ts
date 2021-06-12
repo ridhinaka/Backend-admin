@@ -14,6 +14,7 @@ class purchaseRoutes implements IRoutes{
     this.router.post('/create/purchaseOrder',purchaseController.createPurchaseOrder)
     this.router.post('/updatePurchase/:id',purchaseController.updatePurchase)
     this.router.get('/getTotalOrder/:id',purchaseController.totalOrder)
+    this.router.get('/getSpesificPurchase/:id', purchaseController.getSpesificPurchase)
   }
 }
 

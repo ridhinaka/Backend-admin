@@ -8,6 +8,8 @@ class productsController {
   static async getProduct (req: Request , res: Response) {
     try{
       const findProduct = await Product.find({})
+      .populate('brand_id')
+      .populate('UOM_id')
       res.status(200).json({data:findProduct})
     }
     catch(error){
@@ -20,6 +22,8 @@ class productsController {
 
     try {
       const specificProduct = await Product.findById(id)
+      .populate('brand_id')
+      .populate('UOM_id')
       res.status(200).json({msg:specificProduct})
     } catch (error) {
       res.status(500).json({msg:error})
