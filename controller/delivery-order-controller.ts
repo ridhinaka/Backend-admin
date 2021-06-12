@@ -24,6 +24,7 @@ class deliveryController {
           id_product : id_product,
           purchase_id : purchase_id,
           deliveryCode : deliveryCode,
+          date: req.body.date
         }
         const create_DO = await Delivery.create(newDeliveryOrder) 
         if(create_DO && (!id_product === true)){
@@ -41,18 +42,16 @@ class deliveryController {
               const updateStockProduct = await Product.findByIdAndUpdate(id_product,{$inc:{stock:findPurchaseSpecific.products[i].quantity}},{new:true})
               if(updateStockProduct){
                 const findPurchaseForDelivery = await Purchase.findById(purchase_id)
-                const productsDO_array = findPurchaseForDelivery.productsDeliveryOrder
                 for(let i = 0 ; i < findPurchaseForDelivery.productsDeliveryOrder.length ; i ++){
                   if(findPurchaseForDelivery.productsDeliveryOrder[i].product_id.toString() === id_product){
-                    productsDO_array.splice(i,1)
+                    console.log("ini id",findPurchaseForDelivery.productsDeliveryOrder[i].product_id)
+                    await Purchase.findByIdAndUpdate(purchase_id,{$pull:{productsDeliveryOrder:{product_id:findPurchaseForDelivery.productsDeliveryOrder[i].product_id}}},{multi:true})
                   }
                 }
-                console.log("batas goblog")
-                console.log(findPurchaseForDelivery)
               }
             }
             else{
-              res.status(500)
+              res.status(500).json({msg:"error"})
             }
           }
           res.status(201).json({msg:createDO})
