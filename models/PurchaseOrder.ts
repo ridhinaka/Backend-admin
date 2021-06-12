@@ -8,8 +8,13 @@ interface IPurchase {
     product_id : string,
     totalOrder :number,
     quantity : number,
-    discount : number
-  }]
+  }],
+  productsDeliveryOrder : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number
+  }],
+  status : boolean,
   totalAmount : number,
 }
 
@@ -21,7 +26,13 @@ interface PurchaseDoc extends mongoose.Document {
     product_id : string,
     totalOrder :number,
     quantity : number
-  }]
+  }],
+  productsDeliveryOrder : [{
+    product_id : string,
+    totalOrder :number,
+    quantity : number
+  }],
+  status : boolean,
   totalAmount : number,
 }
 
@@ -38,6 +49,12 @@ const purchaseSchema = new mongoose.Schema({
     totalOrder : {type: Number, default:0},
     quantity : {type: Number, required:true},
   }],
+  productsDeliveryOrder : [{
+    product_id : {type:String, ref:'productSchema'},
+    totalOrder : {type: Number},
+    quantity : {type: Number}
+  }],
+  status: {type: Boolean,default: false},
   totalAmount : {type: Number}
 },
   {
