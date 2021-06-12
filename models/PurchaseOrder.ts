@@ -8,7 +8,6 @@ interface IPurchase {
     product_id : string,
     totalOrder :number,
     quantity : number,
-    discount : number
   }],
   productsDeliveryOrder : [{
     product_id : string,

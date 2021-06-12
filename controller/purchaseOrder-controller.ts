@@ -87,8 +87,8 @@ class purchaseController {
     const findProduct = await Product.findById(product_id);
     const findPurchase = await Purchase.findById(id);
 
+    
     try {
-
         const findPuchaseandUpdate = await Purchase.findByIdAndUpdate(id,{$push:{products:[{product_id:product_id,quantity:quantity,discount:discount,totalOrder : (findProduct.purchasePrice * quantity)}]}},{new:true}).populate('products.product_id').populate('products.product_id.UOM_id')
         const updatePurchaseDelivery = await Purchase.findByIdAndUpdate(findPuchaseandUpdate._id,{$push:{productsDeliveryOrder:{product_id:product_id,totalOrder:findProduct.purchasePrice * quantity - discount,quantity:quantity}}},{new:true})
         res.status(200).json({msg:updatePurchaseDelivery})
