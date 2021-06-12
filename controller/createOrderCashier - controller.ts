@@ -64,6 +64,8 @@ class createOrderCashierController {
     }
   }
 
+
+
   static async getTotalOrderCashier (req:Request, res: Response){
     const {id} = req.params
 

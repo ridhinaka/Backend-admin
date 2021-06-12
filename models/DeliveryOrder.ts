@@ -4,12 +4,14 @@ interface IDelivery {
   id_product : string,
   deliveryCode : string,
   purchase_id : string,
+  date : Date,
 }
 
 interface DeliveryDoc extends mongoose.Document {
   id_product : string,
   deliveryCode : string,
   purchase_id : string,
+  date : Date,
 }
 
 interface DeliveryModel extends mongoose.Model <DeliveryDoc>{
@@ -19,7 +21,8 @@ interface DeliveryModel extends mongoose.Model <DeliveryDoc>{
 const deliveryschema = new mongoose.Schema({
   id_product : {type: mongoose.Types.ObjectId, ref: 'purchaseSchema'},
   deliveryCode : {type :String,required:true},
-  purchase_id : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'}
+  purchase_id : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
+  date : {type:Date, required:true}
 },{
   timestamps:true,
   versionKey :false
