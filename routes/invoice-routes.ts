@@ -14,6 +14,7 @@ class invoiceRoutes implements IRoutes {
     this.router.get('/invoice/:id',invoiceController.getSpecificInvoice)
     this.router.post('/invoice/create',invoiceController.createInvoice)
     this.router.post('/invoice/changeStatus/:id',invoiceController.changeStatus)
+    this.router.post('/invoice/changeStatusTest/:id',invoiceController.changeStatusTest)
   }
 }
 

@@ -11,7 +11,7 @@ class deliveryRoutes implements IRoutes{
 
   route(): void {
     this.router.get('/delivery',deliveryController.getDeliveryOrder)
-    this.router.post('/create/delivery/:id',deliveryController.createDeliveryOrder)
+    this.router.post('/create/delivery',deliveryController.createDeliveryOrder)
   }
 }
 
