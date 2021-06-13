@@ -19,7 +19,7 @@ interface DeliveryModel extends mongoose.Model <DeliveryDoc>{
 }
 
 const deliveryschema = new mongoose.Schema({
-  id_product : {type: mongoose.Types.ObjectId, ref: 'purchaseSchema'},
+  id_product : {type: mongoose.Types.ObjectId, ref: 'productSchema'},
   deliveryCode : {type :String,required:true},
   purchase_id : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
   date : {type:Date, required:true}

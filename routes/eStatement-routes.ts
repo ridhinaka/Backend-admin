@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express'
 import IRoutes from '../routes/IRoutes'
-import estatementController from  '../controller/eStatement - controller'
+import EStatementController from '../controller/EstementController'
 
 class estatementRoutes implements IRoutes {
   router : Router
@@ -10,7 +10,7 @@ class estatementRoutes implements IRoutes {
   }
 
   route():void {
-    
+    this.router.get('/estatementCreate', EStatementController.createEStatement)
   }
 }
 
