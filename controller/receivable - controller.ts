@@ -5,6 +5,7 @@ import {Receivable} from '../models/Receivable'
 class receivableController {
   static async getAllReceivable (res:Response, req:Request){
     const findAlReceivable = await Receivable.find({})
+    .populate('orderCashier_id')
     res.status(200).json({msg:findAlReceivable})
   }
 }

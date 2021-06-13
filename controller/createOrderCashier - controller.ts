@@ -8,6 +8,7 @@ import {Receivable} from '../models/Receivable'
 class createOrderCashierController {
   static async getAllOrder (req: Request, res: Response){
     const getAllActiveProduct = await Product.find({productStatus:"active"})
+    .populate('cashierProduct_id')
     res.status(200).json({data:getAllActiveProduct})
   }
 
@@ -63,8 +64,6 @@ class createOrderCashierController {
       res.status(500)
     }
   }
-
-
 
   static async getTotalOrderCashier (req:Request, res: Response){
     const {id} = req.params

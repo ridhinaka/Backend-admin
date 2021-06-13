@@ -10,7 +10,7 @@ class createOrderCashierRoutes implements IRoutes {
   }
 
   route():void {
-    this.router.get('/getOrderCashier',createOrderCashierController.getAllOrder)
+    this.router.get('/getProductActive',createOrderCashierController.getAllOrder) //productactive
     this.router.get('/getSubTotal/:id',createOrderCashierController.getTotalOrderCashier)
     this.router.get('/isTax/:id',createOrderCashierController.taxOrder)
     this.router.get('/noTaxOrder/:id',createOrderCashierController.noTaxOrder)
