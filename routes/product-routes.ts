@@ -3,17 +3,22 @@ import IRoutes from '../routes/IRoutes'
 import multer from 'multer';
 import productsController from '../controller/product-controller'
 
+
 const storage = multer.diskStorage({
-  destination: function(req: Request, file: any, cb: any) {
-    cb(null,'./uploadsProduct/');
+  destination: (req: Request, file: any, cb: any): any => {
+    cb(null, './uploadsProduct/');
   },
-  filename: function(req: Request, file: any, cb: any) {
-    cb(null, Date.now() +  file.originalname);
+  filename: (req: Request, file: any, cb: any): any => {
+    cb(null, Date.now() + file.originalname);
   }
 });
-  
+
 const fileFilter = (req: Request, file: any, cb: any) => {
-  if (file.mimetype === 'productimage/jpg' || file.mimetype === 'productimage/png' || file.mimetype === 'productimage/jpeg') {
+  if (
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpeg'
+  ) {
     cb(null, true);
   } else {
     cb(null, false);
@@ -28,20 +33,21 @@ const uploads = multer({
   fileFilter: fileFilter
 });
 
-class productRoutes implements IRoutes{
-  router : Router
-  constructor () {
+
+class productRoutes implements IRoutes {
+  router: Router
+  constructor() {
     this.router = Router()
     this.route()
   }
   route(): void {
-    this.router.post('/product/createproduct',productsController.createProduct)
-    this.router.post('/product/create',uploads.single('image'), productsController.uploadProduct)
+    // this.router.post('/product/createproduct', productsController.createProduct)
+    this.router.post('/product/createproduct', uploads.single('productImage'), productsController.uploadProduct)
     this.router.get('/product/getProduct', productsController.getProduct)
-    this.router.get('/product/:id',productsController.getSpecificProduct)
-    
+    this.router.get('/product/:id', productsController.getSpecificProduct)
 
-    this.router.put('/updateStatusProduct/:id',productsController.changeStatusProductActive)
+
+    this.router.put('/updateStatusProduct/:id', productsController.changeStatusProductActive)
   }
 }
 

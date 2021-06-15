@@ -86,17 +86,21 @@ class productsController {
         const newProduct = {
           brand_id,
           UOM_id,
-          productName : req.body.productName,
           productImage :  req.file.path,
+          productName : req.body.productName,
           sellingPrice : req.body.sellingPrice,
           purchasePrice : req.body.purchasePrice,
           code_product : req.body.code_product
         }
+     
         const findBarcode = await Product.findOne({code_product:req.body.code_product})
+        
         const findProduct = await Product.find({productName:req.body.productName,UOM_id:req.body.UOM_id})
         if(findProduct.toString() === ""){
           if(!findBarcode){
+            
             const create_product = await Product.create(newProduct)
+            
             const findBYID = await Product.findById(create_product._id)
             .populate('brand_id')
             .populate('UOM_id')
@@ -116,12 +120,12 @@ class productsController {
       }
     }
     catch(error){
+      console.log(error);
+      
       res.status(500).json({msg: "cannot create product",data:error})
     }
     
   }
-
-
 
   static async changeStatusProductActive (req: Request , res: Response) {
     const {id} = req.params
