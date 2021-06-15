@@ -29,8 +29,10 @@ class EStatementController {
           }
           let totalReceivable = 0
           getAllReceivable = await Receivable.find({createdAt:rangeDate})
+          console.log(getAllReceivable)
           for (let j = 0; j < getAllReceivable.length ; j ++){
             totalReceivable += getAllReceivable[j].grandTotal
+            console.log(totalReceivable)
           }
           let revenue = totalReceivable - totalPayable
           if(totalReceivable > totalPayable){
@@ -43,10 +45,23 @@ class EStatementController {
             const updateEstatement_2 = await estatement.findByIdAndUpdate(create_estatement._id,{$set:{totalPayable:totalPayable, totalReceivable: totalReceivable, revenue:revenue}},{new:true})
             res.status(200).json({data:updateEstatement_2})
           }
+          const updateEstatement = await estatement.findByIdAndUpdate(create_estatement._id,{$set:{totalPayable:totalPayable, status:true}},{new:true})
         }
       } catch (error) {
         res.status(500).json({msg:error})
       }
+    }
+
+    static async getSpecificEstatement (req:Request, res: Response){
+      const {id} = req.params
+
+      try {
+        const findEstatement = await estatement.findById(id)
+        res.status(200).json({data:findEstatement})
+      } catch (error) {
+        res.status(500).json({msg:error})
+      }
+
     }
 }
 export default EStatementController

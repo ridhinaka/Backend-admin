@@ -13,7 +13,9 @@ interface estatementDoc extends mongoose.Document {
   totalPayable : number,
   totalReceivable : number,
   revenue : number,
-  status : boolean
+  status : boolean,
+  dateFrom : string,
+  dateTo : string
 }
 
 interface estatementModel extends mongoose.Model <estatementDoc>{
@@ -25,7 +27,9 @@ const estatementSchema = new mongoose.Schema({
   totalPayable : {type: Number},
   totalReceivable : {type: Number},
   revenue: {type: Number},
-  status : {type:Boolean,default:null}
+  status : {type:Boolean,default:null},
+  dateFrom : {type: String},
+  dateTo : {type: String}
 },{
   timestamps:true,
   versionKey :false

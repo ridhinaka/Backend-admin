@@ -62,6 +62,10 @@ class userController {
     
   }
 
+  static async forgetPasswordRequest (req: Request, res: Response){
+    
+  }
+
   static async forgetPassword(req: Request, res: Response, next: NextFunction){
     const { password, email } = req.body
     const user = await User.findOne({  email: email})
