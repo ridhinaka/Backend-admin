@@ -11,7 +11,12 @@ class purchaseController {
     const findPurchaseOrder = await Purchase.find({})
     .populate('supplier_id')
     .populate('products.product_id')
-    .populate('products.product_id.UOM_id')
+    .populate({
+      path : 'products.product_id',
+      populate : {
+        path : 'UOM_id'
+      }
+    })
     res.status(200).json({ msg: findPurchaseOrder });
   }
 

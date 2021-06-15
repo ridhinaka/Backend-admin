@@ -50,7 +50,6 @@ class invoiceController {
                 amount : updateInvoice.grandTotal,
                 remainingCredit : updateInvoice.remaining_credit
               }
-              await Payable.create(newPayable)
             }
             res.status(201).json({msg:"your invoice have been created",data:updateInvoice})
           } 

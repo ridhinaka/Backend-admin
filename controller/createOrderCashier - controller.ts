@@ -8,8 +8,42 @@ import {Receivable} from '../models/Receivable'
 class createOrderCashierController {
   static async getAllOrder (req: Request, res: Response){
     const getAllActiveProduct = await Product.find({productStatus:"active"})
-    .populate('cashierProduct_id')
+    .populate('productsCashier.cashierProduct_id')
+    .populate({
+      path : 'productsCashier.cashierProduct_id',
+      populate : {
+        path : 'UOM_id'
+      }
+    })
     res.status(200).json({data:getAllActiveProduct})
+  }
+
+  static async getAllOrderCashier (req: Request, res:Response){
+
+    try {
+      const findAllOrder = await CreateOrderCashier.find({})
+
+      res.status(200).json({data:findAllOrder})
+    } catch (error) {
+      res.status(500).json(error)
+    }
+  }
+
+  static async getSpecifiCashierOrder (req:Request, res: Response){
+    const {id} = req.params
+    try {
+      const findSpecificOrder = await CreateOrderCashier.findById(id)
+      .populate('productsCashier.cashierProduct_id')
+      .populate({
+        path : 'productsCashier.cashierProduct_id',
+        populate : {
+          path : 'UOM_id'
+        }
+      })
+      res.status(200).json({data:findSpecificOrder})
+    } catch (error) {
+      res.status(500).json(error)
+    }
   }
 
   static async createOrder (req: Request, res: Response){

@@ -43,7 +43,7 @@ const createOrderCashierSchema = new mongoose.Schema({
   subTotalTax :{type: Number},
   subTotalNoTax : {type: Number},
   grandTotal : {type: Number},
-  status: {type: String, default: "active"}
+  status: {type: String, default: "succeed"}
 },{
   timestamps:true,
   versionKey :false

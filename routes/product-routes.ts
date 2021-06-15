@@ -1,6 +1,32 @@
 import { Router, Request, Response } from 'express'
 import IRoutes from '../routes/IRoutes'
+import multer from 'multer';
 import productsController from '../controller/product-controller'
+
+const storage = multer.diskStorage({
+  destination: function(req: Request, file: any, cb: any) {
+    cb(null,'./uploadsProduct/');
+  },
+  filename: function(req: Request, file: any, cb: any) {
+    cb(null, Date.now() +  file.originalname);
+  }
+});
+  
+const fileFilter = (req: Request, file: any, cb: any) => {
+  if (file.mimetype === 'productimage/jpg' || file.mimetype === 'productimage/png' || file.mimetype === 'productimage/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+    console.log('format must jpg,jpeg,png')
+  }
+};
+const uploads = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
 
 class productRoutes implements IRoutes{
   router : Router
@@ -9,9 +35,12 @@ class productRoutes implements IRoutes{
     this.route()
   }
   route(): void {
+    this.router.post('/product/createproduct',productsController.createProduct)
+    this.router.post('/product/create',uploads.single('image'), productsController.uploadProduct)
     this.router.get('/product/getProduct', productsController.getProduct)
     this.router.get('/product/:id',productsController.getSpecificProduct)
-    this.router.post('/product/createproduct',productsController.createProduct)
+    
+
     this.router.put('/updateStatusProduct/:id',productsController.changeStatusProductActive)
   }
 }
