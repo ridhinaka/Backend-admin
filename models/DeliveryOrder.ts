@@ -1,17 +1,17 @@
 import mongoose from 'mongoose'
 
 interface IDelivery {
-  product_id : string,
-  purchase_order_id : string,
-  quantity : number,
+  id_product : string,
   deliveryCode : string,
+  purchase_id : string,
+  date : Date,
 }
 
 interface DeliveryDoc extends mongoose.Document {
-  product_id : string,
-  purchase_order_id : string,
-  quantity : number,
+  id_product : string,
   deliveryCode : string,
+  purchase_id : string,
+  date : Date,
 }
 
 interface DeliveryModel extends mongoose.Model <DeliveryDoc>{
@@ -19,10 +19,13 @@ interface DeliveryModel extends mongoose.Model <DeliveryDoc>{
 }
 
 const deliveryschema = new mongoose.Schema({
-  product_id : {type: mongoose.Types.ObjectId, ref:'productSchemas'},
-  purchase_order_id :{type: mongoose.Types.ObjectId, ref:'purchaseSchemas'},
-  quantity : {type : Number,required:true},
-  deliveryCode : {type :String,required:true,unique:true}
+  id_product : {type: mongoose.Types.ObjectId, ref: 'productSchema'},
+  deliveryCode : {type :String,required:true},
+  purchase_id : {type: mongoose.Types.ObjectId, ref:'purchaseSchema'},
+  date : {type:Date, required:true}
+},{
+  timestamps:true,
+  versionKey :false
 })
 
 const Delivery = mongoose.model<DeliveryDoc, DeliveryModel> ('deliverySchema',deliveryschema)

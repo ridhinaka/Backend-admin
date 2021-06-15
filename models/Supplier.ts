@@ -11,7 +11,8 @@ interface ISupplier {
     city: string,
     state: string,
     country : string,
-    postalCode : number
+    postalCode : number,
+    addressDetail : string
   }
 }
 
@@ -26,7 +27,8 @@ interface SupplierDoc extends mongoose.Document {
     city: string,
     state: string,
     country : string,
-    postalCode : number
+    postalCode : number,
+    addressDetail : string
   }
 }
 

@@ -25,7 +25,8 @@ class supplierController {
             city : req.body.city,
             state: req.body.state,
             country : req.body.country,
-            postalCode : req.body.postalCode
+            postalCode : req.body.postalCode,
+            addressDetail : req.body.addressDetail
           }
         }
         const create_supplier = await Supplier.create(newSupplier)

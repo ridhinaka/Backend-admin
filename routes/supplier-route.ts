@@ -10,7 +10,7 @@ class supplierRoute implements IRoutes {
   }
 
   route(): void {
-    this.router.get('/getsupplier',supplierController.getSupplier)
+    this.router.get('/supplier/getsupplier',supplierController.getSupplier)
     this.router.post('/supplier/create',supplierController.createSupplier)
   }
 }

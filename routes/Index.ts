@@ -6,10 +6,12 @@ import UOMRoutes from '../routes/UOM-routes'
 import supplierRoute from '../routes/supplier-route'
 import purchaseRoutes from '../routes/purchase-route'
 import invoiceRoutes from '../routes/invoice-routes'
-import listProductRoutes from '../routes/list-product.route'
+import deliveryRoutes from '../routes/delivery-routes'
+import createOrderCashierRoutes from '../routes/createOrderCashier - routes'
+import receivableRoutes from '../routes/receivable - routes'
+import payableRoutes from '../routes/payable - routes'
+import estatementRoutes from '../routes/eStatement-routes'
 import authJwt from '../middlewares/auth'
-import listProductRoute from '../routes/list-product.route'
-
 
 class Routes {
   router : Router 
@@ -20,11 +22,15 @@ class Routes {
     this.auth()
     this.brand()
     this.product()
-    this.listProduct()
     this.uom()
     this.supplier()
     this.purchase()
+    this.delivery()
     this.invoice()
+    this.createOrderCashier()
+    this.receivable()
+    this.payable()
+    this.estatement()
   }
   public routes(): void {
     this.router.get("/", (req: Request, res: Response) => {
@@ -47,10 +53,6 @@ class Routes {
   public product(): void{
     this.router.use(productRoutes)
   }
-  public listProduct(): void{
-    this.router.use(listProductRoutes)
-  }
-
   public uom(): void{
     this.router.use(UOMRoutes)
   }
@@ -63,9 +65,26 @@ class Routes {
     this.router.use(purchaseRoutes)
   }
 
+  public delivery(): void{
+    this.router.use(deliveryRoutes)
+  }
+
   public invoice(): void {
     this.router.use(invoiceRoutes)
   }
+  public createOrderCashier(): void {
+    this.router.use(createOrderCashierRoutes)
+  }
+  public receivable(): void {
+    this.router.use(receivableRoutes)
+  }
+  public payable(): void {
+    this.router.use(payableRoutes)
+  }
+  public estatement(): void {
+    this.router.use(estatementRoutes)
+  }
+
 }
 
 export default new Routes().router 

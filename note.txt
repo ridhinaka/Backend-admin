@@ -20,5 +20,5 @@
           }
         }
 
-         const updateListProduct = await ListProduct.findByIdAndUpdate(createListProduct._id,{$set:{createProduct_id:id}},{new:true}).populate('createProduct_id')
+         const updateListProduct = await ListProduct.findByIdAndUpdate(createListProduct._id,{$set:{createProduct_id:id}},{new:true}).estatement('createProduct_id')
          res.status(200).json({msg:"your product have been created",data:updateListProduct})

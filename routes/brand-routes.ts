@@ -10,6 +10,7 @@ class brandRoutes implements IRoutes {
   }
 
   route():void {
+    this.router.get('/brand/getBrand',brandContoller.getBrand)
     this.router.post('/brand/createbrand',brandContoller.createBrand)
   }
 }
