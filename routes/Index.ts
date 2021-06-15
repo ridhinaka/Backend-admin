@@ -11,7 +11,7 @@ import createOrderCashierRoutes from '../routes/createOrderCashier - routes'
 import receivableRoutes from '../routes/receivable - routes'
 import payableRoutes from '../routes/payable - routes'
 import estatementRoutes from '../routes/eStatement-routes'
-import authJwt from '../middlewares/auth'
+// import authJwt from '../middlewares/auth'
 
 class Routes {
   router : Router 
@@ -19,7 +19,7 @@ class Routes {
     this.router = Router()
     this.routes()
     this.user()
-    this.auth()
+    // this.auth()
     this.brand()
     this.product()
     this.uom()
@@ -42,9 +42,9 @@ class Routes {
     this.router.use(userRoutes)
   }
 
-  public auth() :void{
-    this.router.use(authJwt.authentication)
-  }
+  // public auth() :void{
+  //   this.router.use(authJwt.authentication)
+  // }
 
   public brand(): void {
     this.router.use(brandRoutes)

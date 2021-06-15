@@ -16,13 +16,13 @@ var createOrderCashier___routes_1 = __importDefault(require("../routes/createOrd
 var receivable___routes_1 = __importDefault(require("../routes/receivable - routes"));
 var payable___routes_1 = __importDefault(require("../routes/payable - routes"));
 var eStatement_routes_1 = __importDefault(require("../routes/eStatement-routes"));
-var auth_1 = __importDefault(require("../middlewares/auth"));
+// import authJwt from '../middlewares/auth'
 var Routes = /** @class */ (function () {
     function Routes() {
         this.router = express_1.Router();
         this.routes();
         this.user();
-        this.auth();
+        // this.auth()
         this.brand();
         this.product();
         this.uom();
@@ -43,9 +43,9 @@ var Routes = /** @class */ (function () {
     Routes.prototype.user = function () {
         this.router.use(user_routes_1.default);
     };
-    Routes.prototype.auth = function () {
-        this.router.use(auth_1.default.authentication);
-    };
+    // public auth() :void{
+    //   this.router.use(authJwt.authentication)
+    // }
     Routes.prototype.brand = function () {
         this.router.use(brand_routes_1.default);
     };
