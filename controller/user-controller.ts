@@ -57,7 +57,7 @@ class userController {
       res.status(200).json({ msg: "login succes", data: findEmail, accessToken: token });
     }
     catch(error){
-      res.status(500).json({msg:"error cuk"})
+      res.status(500).json({msg:"error"})
     }
     
   }
