@@ -41,7 +41,7 @@ class productRoutes implements IRoutes {
     this.route()
   }
   route(): void {
-    // this.router.post('/product/createproduct', productsController.createProduct)
+    this.router.post('/product/createproduct', productsController.createProduct)
     this.router.post('/product/createproduct', uploads.single('productImage'), productsController.uploadProduct)
     this.router.get('/product/getProduct', productsController.getProduct)
     this.router.get('/product/:id', productsController.getSpecificProduct)
