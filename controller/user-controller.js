@@ -137,7 +137,7 @@ var userController = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 2:
                         error_2 = _a.sent();
-                        res.status(500).json({ msg: "error cuk" });
+                        res.status(500).json({ msg: "error" });
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/];
                 }
