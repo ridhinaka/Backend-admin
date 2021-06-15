@@ -9,7 +9,8 @@ interface IProduct {
   purchasePrice : number,
   productStatus : string,
   code_product : number,
-  stock: number
+  stock: number,
+  status: boolean,
 }
 interface ProductDoc extends mongoose.Document {
   brand_id : string,
@@ -20,7 +21,8 @@ interface ProductDoc extends mongoose.Document {
   purchasePrice : number,
   productStatus : string,
   code_product : number,
-  stock : number
+  stock : number,
+  status: boolean,
 }
 
 interface ProductModel extends mongoose.Model <ProductDoc>{
@@ -37,6 +39,7 @@ const productSchema = new mongoose.Schema ({
   productStatus : {type: String,required:true,default:"deactive"},
   code_product : {type: Number, required:true},
   stock: {type: Number, default:0},
+  status : {type: Boolean, default : false },
 },
   {
     timestamps:true,

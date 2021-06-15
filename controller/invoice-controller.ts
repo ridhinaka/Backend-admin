@@ -50,6 +50,10 @@ class invoiceController {
                 amount : updateInvoice.grandTotal,
                 remainingCredit : updateInvoice.remaining_credit
               }
+              const create_payable = await Payable.create(newPayable)
+              const updatePayable = await Payable.findByIdAndUpdate(create_payable,{$set:{date:new Date()}},{new:true})
+              console.log(typeof updatePayable.date)
+              
             }
             res.status(201).json({msg:"your invoice have been created",data:updateInvoice})
           } 
