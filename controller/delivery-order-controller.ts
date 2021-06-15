@@ -9,6 +9,9 @@ import { Error } from 'mongoose'
 class deliveryController {
   static async getDeliveryOrder (req: Request , res: Response) {
     const findDeliveryOrder = await Delivery.find({})
+    .populate('purchase_id')
+    .populate('id_product')
+    .populate('id_product.UOM_id')
     res.status(200).json({msg:findDeliveryOrder})
   }
 

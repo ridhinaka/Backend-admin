@@ -8,14 +8,29 @@ class purchaseController {
   constructor() {}
 
   static async getPurchase(req: Request, res: Response) {
+    const findPurchaseOrder = await Purchase.find({})
+    .populate('supplier_id')
+    .populate('products.product_id')
+    .populate({
+      path : 'products.product_id',
+      populate : {
+        path : 'UOM_id'
+      }
+    })
+    res.status(200).json({ msg: findPurchaseOrder });
+  }
 
+  static async getSpesificPurchase(req: Request, res: Response){
+    const {id} = req.params
     try {
-      const findPurchaseOrder = await Purchase.find({status:false})
-      res.status(200).json({ msg: findPurchaseOrder });
+      const spesificPurchase = await Purchase.findById(id)
+      .populate('supplier_id')
+      .populate('products.product_id')
+      .populate('products.product_id.UOM_id')
+      res.status(200).json({msg:spesificPurchase})
     } catch (error) {
-      res.status(500)
+      res.status(500).json({msg:error})
     }
-    
   }
 
   static async createPurchaseOrder(req: Request, res: Response) {
