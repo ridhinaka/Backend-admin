@@ -10,7 +10,7 @@ class estatementRoutes implements IRoutes {
   }
 
   route():void {
-    this.router.get('/estatementCreate', EStatementController.createEStatement)
+    this.router.post('/estatementCreate', EStatementController.createEStatement)
   }
 }
 

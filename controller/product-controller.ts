@@ -63,7 +63,10 @@ class productsController {
             res.status(500).json({msg: "product already exist"})
           }else{
             const create_product = await Product.create(newProduct)
-            res.status(201).json({msg:create_product})
+            const updateStatusProduct = await Product.findById(create_product._id)
+            .populate('brand_id')
+            .populate('UOM_id')
+            res.status(201).json({msg:updateStatusProduct})
           }
         }  
       }

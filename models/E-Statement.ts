@@ -1,15 +1,17 @@
 import mongoose from 'mongoose'
 
 interface Iestatement {
-  id_payable :string,
-  id_receivable : string,
+  codeEstatement : string,
+  totalPayable : number,
+  totalReceivable : number,
   revenue : number,
   status : boolean
 }
 
 interface estatementDoc extends mongoose.Document {
-  id_payable : string,
-  id_receivable : string,
+  codeEstatement : string,
+  totalPayable : number,
+  totalReceivable : number,
   revenue : number,
   status : boolean
 }
@@ -19,8 +21,9 @@ interface estatementModel extends mongoose.Model <estatementDoc>{
 }
 
 const estatementSchema = new mongoose.Schema({
-  id_payable : {type: mongoose.Types.ObjectId, ref : 'payableSchema'},
-  id_receivable : {type: mongoose.Types.ObjectId, ref : 'receivableSchema'},
+  codeEstatement : {type:String, required:true,unique:true},
+  totalPayable : {type: Number},
+  totalReceivable : {type: Number},
   revenue: {type: Number},
   status : {type:Boolean,default:null}
 },{

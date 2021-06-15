@@ -19,6 +19,7 @@ class createOrderCashierRoutes implements IRoutes {
     this.router.post('/createOrderCashier',createOrderCashierController.createOrder)
     this.router.post('/addProduct/:id',createOrderCashierController.addProductCashier)
     this.router.post('/cancelOrder/:id',createOrderCashierController.cancelOrder)
+    this.router.put('/toplistProduct', createOrderCashierController.getTopListProduct)
   }
 
 }

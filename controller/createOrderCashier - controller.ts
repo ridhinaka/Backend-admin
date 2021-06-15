@@ -65,7 +65,7 @@ class createOrderCashierController {
         const createOrderCashier = await CreateOrderCashier.create(newCreateOrderCashier)
         if(createOrderCashier){
           const newReceivable = {
-            orderCashier_id : createOrderCashier._id
+            orderCashier_id : createOrderCashier._id,
           }
           await Receivable.create(newReceivable)
         }
@@ -190,6 +190,25 @@ class createOrderCashierController {
       }
     } catch (error) {
       res.status(500).json({msg:"your order have been cancelled already"})
+    }
+  }
+
+  static async getTopListProduct (req:Request, res :Response){
+    const inputDateFrom : any = req.body.dateFrom;
+    const inputDateUntill : any = req.body.dateTo;
+    const date_from = inputDateFrom + "T00:00:00.0000"
+    const date_to = inputDateUntill + "T23:59:59.0000"
+    const rangeDate : object = { $gte : date_from, $lte: date_to}
+
+    try {
+      const findAllCashierTransactions = await CreateOrderCashier.find({createdAt: rangeDate})
+      for(let i = 0 ; i < findAllCashierTransactions.length; i ++){
+        for(let j = 0 ; j < findAllCashierTransactions[i].productsCashier.length ; j ++){
+          console.log(findAllCashierTransactions[i].productsCashier[j].quantity_product)
+        }
+      }
+    } catch (error) {
+      
     }
   }
 }
